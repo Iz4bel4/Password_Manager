@@ -44,21 +44,22 @@ def save():
     if len(email) == 0 or len(password) == 0:
         messagebox.showinfo(title='Oops', message="Please don't leave any fields empty!")
     else:
-        is_okay = messagebox.askokcancel(title=website_entry.get(),
-                                         message=f'These are the details entered: \nEmail: {email} \nPassword:{password}\nIs it okay to save?')
-        if is_okay:
+        try:
             with open('data.json', 'r') as datafile:
-                #reading old data
                 data = json.load(datafile)
-                #updating new data
-                data.update(new_data)
-
+        except FileNotFoundError:
             with open('data.json', 'w') as datafile:
-                #saving new data
+                # saving new data
                 json.dump(new_data, datafile, indent=4)
-
-                website_entry.delete(0, END)
-                pass_entry.delete(0, END)
+        else:
+            #updating new data
+            data.update(new_data)
+            with open('data.json', 'w') as datafile:
+                # saving new data
+                json.dump(new_data, datafile, indent=4)
+        finally:
+            website_entry.delete(0, END)
+            pass_entry.delete(0, END)
 
 
 
